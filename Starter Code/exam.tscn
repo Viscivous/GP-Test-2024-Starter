@@ -1,3 +1,93 @@
-[gd_scene format=3 uid="uid://bunyohpobvu8b"]
+[gd_scene load_steps=10 format=3 uid="uid://bunyohpobvu8b"]
+
+[ext_resource type="Script" path="res://exam.gd" id="1_nwvvp"]
+[ext_resource type="FontFile" uid="uid://0jk2p2kfmllu" path="res://fonts/Hyperspace Bold.otf" id="2_nk7dq"]
+[ext_resource type="Texture2D" uid="uid://cwkw72rqvw0n7" path="res://Tiles/tile_0014.png" id="2_xbn3q"]
+[ext_resource type="Script" path="res://Sprite2D.gd" id="3_awtmq"]
+[ext_resource type="FontFile" uid="uid://c7m2s77s7pxfy" path="res://fonts/Minecraft.ttf" id="3_m3i4w"]
+[ext_resource type="PackedScene" uid="uid://nb8daasaeu3i" path="res://explosion.tscn" id="4_rhdv0"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_pvp10"]
+
+[sub_resource type="CanvasTexture" id="CanvasTexture_8t6sx"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_l4a0q"]
+size = Vector2(1019, 54.125)
 
 [node name="root" type="Node2D"]
+script = ExtResource("1_nwvvp")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="HSlider" type="HSlider" parent="CanvasLayer"]
+offset_left = 133.0
+offset_top = -1.0
+offset_right = 379.0
+offset_bottom = 112.0
+min_value = 1.0
+max_value = 20.0
+value = 1.0
+
+[node name="Label" type="Label" parent="CanvasLayer/HSlider"]
+layout_mode = 0
+offset_left = -79.0
+offset_top = 43.0
+offset_right = 66.0
+offset_bottom = 93.0
+theme_override_fonts/font = ExtResource("2_nk7dq")
+text = "Count"
+
+[node name="Button" type="Button" parent="CanvasLayer/HSlider"]
+layout_mode = 0
+offset_left = -40.0
+offset_top = 97.0
+offset_right = 73.0
+offset_bottom = 137.0
+theme_override_fonts/font = ExtResource("3_m3i4w")
+text = "Create Nodes"
+
+[node name="Numbers" type="Label" parent="CanvasLayer/HSlider"]
+layout_mode = 0
+offset_left = 259.0
+offset_top = 46.0
+offset_right = 352.0
+offset_bottom = 94.0
+theme_override_fonts/font = ExtResource("3_m3i4w")
+text = "1"
+horizontal_alignment = 3
+vertical_alignment = 3
+
+[node name="RigidBody2D" type="RigidBody2D" parent="CanvasLayer"]
+position = Vector2(512, 512)
+gravity_scale = 0.0
+
+[node name="Sprite2D" type="Sprite2D" parent="CanvasLayer/RigidBody2D"]
+scale = Vector2(9, 9)
+texture = ExtResource("2_xbn3q")
+script = ExtResource("3_awtmq")
+
+[node name="explosion" parent="CanvasLayer/RigidBody2D/Sprite2D" instance=ExtResource("4_rhdv0")]
+position = Vector2(0, 0)
+scale = Vector2(0.111111, 0.111111)
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="CanvasLayer/RigidBody2D"]
+scale = Vector2(8, 8)
+shape = SubResource("CircleShape2D_pvp10")
+
+[node name="DeathPlain" type="RigidBody2D" parent="CanvasLayer"]
+position = Vector2(512, 1000)
+gravity_scale = 0.0
+
+[node name="Sprite2D" type="Sprite2D" parent="CanvasLayer/DeathPlain"]
+position = Vector2(6.5, 1.93744)
+scale = Vector2(2044, 106)
+texture = SubResource("CanvasTexture_8t6sx")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CanvasLayer/DeathPlain"]
+position = Vector2(3.5, 3.06256)
+scale = Vector2(2, 2)
+shape = SubResource("RectangleShape2D_l4a0q")
+
+[connection signal="value_changed" from="CanvasLayer/HSlider" to="." method="_on_h_slider_value_changed"]
+[connection signal="pressed" from="CanvasLayer/HSlider/Button" to="." method="_on_button_pressed"]
+[connection signal="body_entered" from="CanvasLayer/DeathPlain" to="CanvasLayer/RigidBody2D/Sprite2D" method="_on_death_plain_body_entered"]
